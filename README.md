@@ -34,4 +34,11 @@ Replaces the normal instant jump with a hold-to-charge system:
 ### [Ground Pound!](GroundPound.js)
 Lets you groundpound very quickly into the ground, having after-images and some subtle sfx, and even a little bounce at the end!
 
+### [Portal Mod!](PortalMod.js)
+Adds a fully working portal gun to the game:
+- **Click / Tap:** place a portal and alternates to blue, then orange, then blue, orange...
+- **R:** clear both portals.
+- Walk into either portal and you'll pop out the other one with your momentum fully preserved!
+- Both portals scale in smoothly when placed, and there's no cooldown, so you can bounce between them as fast as you can move!!!
+
 # Enjoy your time with these mods!!!
