@@ -20,7 +20,7 @@
     function fetchScript(url) {
         return new Promise((resolve, reject) => {
             const s = document.createElement('script');
-            s.src = url;
+            s.src = url + (url.indexOf('?') === -1 ? '?v=' : '&v=') + Date.now();
             s.onload = () => resolve();
             s.onerror = () => reject(new Error('Failed to load: ' + url));
             document.head.appendChild(s);
@@ -299,7 +299,7 @@
                 <div class="modapi-title">
                     <div class="icon"><span class="msym">extension</span></div>
                     <span class="name">Mod Menu</span>
-                    <span class="ver">v1.0</span>
+                    <span class="ver">v${CORE_VERSION}</span>
                 </div>
                 <div class="modapi-close"><span class="msym">close</span></div>
             </div>
