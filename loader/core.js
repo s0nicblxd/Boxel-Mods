@@ -3,6 +3,8 @@
 
     if (window.ModAPI && window.ModAPI._booted) return;
 
+    const CORE_VERSION = '1.0.1';
+
     const registry = new Map();
     const patchStacks = new Map();
     const pendingRegistrations = new Map();
@@ -167,7 +169,7 @@
 
     const MENU_CSS = `
         .modapi-btn {
-            position: fixed; top: 20px; right: 88px;
+            position: fixed; top: 20px; right: 100px;
             width: 56px; height: 56px; border-radius: 14px;
             background: #eb2b6d; color: #fff;
             display: flex; align-items: center; justify-content: center;
@@ -430,6 +432,8 @@
         booted = true;
         window.ModAPI._booted = true;
 
+        log('Core v' + CORE_VERSION + ' booting...');
+
         await fetchScript(manifestLocation);
         manifest = window.BOXEL_MOD_MANIFEST;
         if (!manifest || !manifest.mods) { log('Invalid manifest'); return; }
@@ -450,11 +454,12 @@
         }
         if (menu) menu.render();
 
-        log('Booted with', enabledIds.length, 'mod(s) enabled');
+        log('Core v' + CORE_VERSION + ' ready —', enabledIds.length, 'mod(s) enabled');
     }
 
     window.ModAPI = {
         _booted: false,
+        _version: CORE_VERSION,
         boot,
         register,
 
