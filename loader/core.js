@@ -3,7 +3,7 @@
 
     if (window.ModAPI && window.ModAPI._booted) return;
 
-    const CORE_VERSION = '1.0.3';
+    const CORE_VERSION = '1.0.4';
 
     const registry = new Map();
     const patchStacks = new Map();
@@ -18,13 +18,7 @@
     const log = (...a) => console.log('%c[ModAPI]', 'color:#eb2b6d;font-weight:bold', ...a);
 
     function fetchScript(url) {
-        return new Promise((resolve, reject) => {
-            const s = document.createElement('script');
-            s.src = url + (url.indexOf('?') === -1 ? '?v=' : '&v=') + Date.now();
-            s.onload = () => resolve();
-            s.onerror = () => reject(new Error('Failed to load: ' + url));
-            document.head.appendChild(s);
-        });
+        return window.ModAPI_loadScript(url);
     }
 
     function register(def) {
