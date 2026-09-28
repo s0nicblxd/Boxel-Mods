@@ -269,8 +269,8 @@
         btn.innerHTML = '<span class="msym">extension</span>';
         btn.style.cssText = `
             position: fixed;
-            top: 84px;
-            right: 20px;
+            top: 150px;
+            right: 60px;
             width: 56px;
             height: 56px;
             border-radius: 14px;
