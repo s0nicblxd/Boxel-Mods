@@ -1,210 +1,177 @@
-(function() {
-    'use strict';
+ModAPI.register({
+    id: 'jump-charge',
+    name: 'Jump Charge',
+    version: '1.0',
+    description: 'Hold to charge a bigger jump.',
 
-    var JUMP_CODES = ['Space', 'ArrowUp', 'KeyW'];
-    var MIN_VEL = -4;
-    var MAX_VEL = -11;
-    var MAX_CHARGE_MS = 2000;
+    load() {
+        const api = ModAPI;
 
-    var isCharging = false;
-    var chargeStartTime = 0;
-    var forceReleaseTimeout = null;
+        const MIN_VEL = -4;
+        const MAX_VEL = -11;
+        const MAX_CHARGE_MS = 2000;
+        const BAR_WIDTH = 220;
+        const BAR_HEIGHT = 28;
+        const POINTER_SIZE = 14;
 
-    var usedJumpSinceGrounded = false;
-    var wasGrounded = true;
+        let isCharging = false;
+        let chargeStartTime = 0;
+        let forceReleaseTimeout = null;
+        let usedJumpSinceGrounded = false;
+        let wasGrounded = true;
 
-    var BAR_WIDTH = 220;
-    var BAR_HEIGHT = 28;
-    var POINTER_SIZE = 14;
+        const container = document.createElement("div");
+        container.style.cssText = `
+            position:absolute; top:1.5em; left:50%; transform:translateX(-50%);
+            display:none; flex-direction:column; align-items:center;
+            pointer-events:none; z-index:9999;
+        `;
 
-    var container = document.createElement("div");
-    container.style.position = "absolute";
-    container.style.top = "1.5em";
-    container.style.left = "50%";
-    container.style.transform = "translateX(-50%)";
-    container.style.display = "none";
-    container.style.flexDirection = "column";
-    container.style.alignItems = "center";
-    container.style.pointerEvents = "none";
-    container.style.zIndex = "9999";
+        const bar = document.createElement("div");
+        bar.style.cssText = `
+            width:${BAR_WIDTH}px; height:${BAR_HEIGHT}px;
+            display:flex; flex-direction:row;
+            border:3px solid #000; border-radius:3px; overflow:hidden;
+            box-shadow:0 0.2em 0 #00000040; box-sizing:content-box;
+        `;
 
-    var bar = document.createElement("div");
-    bar.style.width = BAR_WIDTH + "px";
-    bar.style.height = BAR_HEIGHT + "px";
-    bar.style.display = "flex";
-    bar.style.flexDirection = "row";
-    bar.style.border = "3px solid #000";
-    bar.style.borderRadius = "3px";
-    bar.style.overflow = "hidden";
-    bar.style.boxShadow = "0 0.2em 0 #00000040";
-    bar.style.boxSizing = "content-box";
+        [{ color: "#8CE81C", weight: 40 },
+         { color: "#FFEB00", weight: 28 },
+         { color: "#FF8C00", weight: 20 },
+         { color: "#E8232B", weight: 12 }].forEach((z) => {
+            const zone = document.createElement("div");
+            zone.style.flex = z.weight;
+            zone.style.background = z.color;
+            bar.appendChild(zone);
+        });
 
-    var zones = [
-        { color: "#8CE81C", weight: 40 },
-        { color: "#FFEB00", weight: 28 },
-        { color: "#FF8C00", weight: 20 },
-        { color: "#E8232B", weight: 12 }
-    ];
-    zones.forEach(function(z) {
-        var zone = document.createElement("div");
-        zone.style.flex = z.weight;
-        zone.style.background = z.color;
-        bar.appendChild(zone);
-    });
+        const pointerWrap = document.createElement("div");
+        pointerWrap.style.cssText = `position:relative; width:${BAR_WIDTH}px; height:0px;`;
 
-    var pointerWrap = document.createElement("div");
-    pointerWrap.style.position = "relative";
-    pointerWrap.style.width = BAR_WIDTH + "px";
-    pointerWrap.style.height = "0px";
+        const pointerOutline = document.createElement("div");
+        pointerOutline.style.cssText = `
+            position:absolute; top:-2px; left:0px;
+            width:0; height:0;
+            border-left:${(POINTER_SIZE + 6) / 2}px solid transparent;
+            border-right:${(POINTER_SIZE + 6) / 2}px solid transparent;
+            border-bottom:${POINTER_SIZE + 6}px solid #000000;
+            transform:translateX(-50%); z-index:1;
+        `;
 
-    var pointerOutline = document.createElement("div");
-    pointerOutline.style.position = "absolute";
-    pointerOutline.style.top = "-2px";
-    pointerOutline.style.left = "0px";
-    pointerOutline.style.width = "0";
-    pointerOutline.style.height = "0";
-    pointerOutline.style.borderLeft = ((POINTER_SIZE + 6) / 2) + "px solid transparent";
-    pointerOutline.style.borderRight = ((POINTER_SIZE + 6) / 2) + "px solid transparent";
-    pointerOutline.style.borderBottom = (POINTER_SIZE + 6) + "px solid #000000";
-    pointerOutline.style.transform = "translateX(-50%)";
-    pointerOutline.style.zIndex = "1";
+        const pointer = document.createElement("div");
+        pointer.style.cssText = `
+            position:absolute; top:0px; left:0px;
+            width:0; height:0;
+            border-left:${POINTER_SIZE / 2}px solid transparent;
+            border-right:${POINTER_SIZE / 2}px solid transparent;
+            border-bottom:${POINTER_SIZE}px solid #ffffff;
+            transform:translateX(-50%); z-index:2;
+        `;
 
-    var pointer = document.createElement("div");
-    pointer.style.position = "absolute";
-    pointer.style.top = "0px";
-    pointer.style.left = "0px";
-    pointer.style.width = "0";
-    pointer.style.height = "0";
-    pointer.style.borderLeft = (POINTER_SIZE / 2) + "px solid transparent";
-    pointer.style.borderRight = (POINTER_SIZE / 2) + "px solid transparent";
-    pointer.style.borderBottom = POINTER_SIZE + "px solid #ffffff";
-    pointer.style.transform = "translateX(-50%)";
-    pointer.style.zIndex = "2";
+        pointerWrap.appendChild(pointerOutline);
+        pointerWrap.appendChild(pointer);
+        container.appendChild(bar);
+        container.appendChild(pointerWrap);
+        document.body.appendChild(container);
+        api.addCleanup(() => container.remove());
 
-    pointerWrap.appendChild(pointerOutline);
-    pointerWrap.appendChild(pointer);
-    container.appendChild(bar);
-    container.appendChild(pointerWrap);
-    appElement.appendChild(container);
+        const showUI = () => { container.style.display = "flex"; };
+        const hideUI = () => { container.style.display = "none"; };
 
-    function showUI() {
-        container.style.display = "flex";
-    }
+        const updateBarFill = (fraction) => {
+            const x = fraction * BAR_WIDTH;
+            pointer.style.left = x + "px";
+            pointerOutline.style.left = x + "px";
+        };
 
-    function hideUI() {
-        container.style.display = "none";
-    }
+        api.onEvent('pageMounted', hideUI);
 
-    function updateBarFill(fraction) {
-        var x = fraction * BAR_WIDTH;
-        pointer.style.left = x + "px";
-        pointerOutline.style.left = x + "px";
-    }
-
-    window.addEventListener("pageMounted", function() {
-        hideUI();
-    });
-
-    function isJumpKeyEvent(e) {
-        return JUMP_CODES.indexOf(e.code) !== -1;
-    }
-
-    function isJumpPointerEvent(e) {
-        return e.pointerType === 'mouse' && e.target && e.target.tagName === 'CANVAS';
-    }
-
-    function releaseJump() {
-        if (!isCharging) return;
-        isCharging = false;
-        hideUI();
-
-        if (forceReleaseTimeout) {
-            clearTimeout(forceReleaseTimeout);
-            forceReleaseTimeout = null;
-        }
-
-        var heldMs = performance.now() - chargeStartTime;
-        var fraction = Math.min(heldMs, MAX_CHARGE_MS) / MAX_CHARGE_MS;
-        var vel = MIN_VEL + (MAX_VEL - MIN_VEL) * fraction;
-
-        if (isFinite(vel)) {
-            setVelocityY(vel);
-            app.player.jumpReady = false;
-            usedJumpSinceGrounded = true;
-            wasGrounded = false;
-            app.assets.audio.play("pop1");
-        }
-    }
-
-    app.player.jump = function() {
-        if (app.player.mode === 'grapple') {
-            app.player.jumpOriginal();
-            return;
-        }
-        if (isCharging) return;
-        if (!canJump() || usedJumpSinceGrounded) return;
-
-        isCharging = true;
-        chargeStartTime = performance.now();
-
-        app.assets.audio.play("wood");
-
-        if (app.play) {
-            updateBarFill(0);
-            showUI();
-        }
-
-        forceReleaseTimeout = setTimeout(function() {
-            forceReleaseTimeout = null;
-            releaseJump();
-        }, MAX_CHARGE_MS);
-    };
-
-    addUpdateFunction(function() {
-        if (app.player.mode === 'grapple') {
-            if (isCharging) {
-                isCharging = false;
-                if (forceReleaseTimeout) {
-                    clearTimeout(forceReleaseTimeout);
-                    forceReleaseTimeout = null;
-                }
-                hideUI();
-            }
-            return;
-        }
-
-        var grounded = canJump();
-        if (grounded && !wasGrounded) {
-            usedJumpSinceGrounded = false;
-        }
-        wasGrounded = grounded;
-
-        if (!app.play) {
-            if (isCharging) releaseJump();
+        const releaseJump = () => {
+            if (!isCharging) return;
+            isCharging = false;
             hideUI();
-            return;
-        }
 
-        if (isCharging) {
-            var heldMs = performance.now() - chargeStartTime;
-            var fraction = Math.min(heldMs, MAX_CHARGE_MS) / MAX_CHARGE_MS;
-            updateBarFill(fraction);
-        }
-    });
+            if (forceReleaseTimeout) {
+                clearTimeout(forceReleaseTimeout);
+                forceReleaseTimeout = null;
+            }
 
-    window.addEventListener('keyup', function(e) {
-        if (isJumpKeyEvent(e)) releaseJump();
-    }, true);
+            const heldMs = performance.now() - chargeStartTime;
+            const fraction = Math.min(heldMs, MAX_CHARGE_MS) / MAX_CHARGE_MS;
+            const vel = MIN_VEL + (MAX_VEL - MIN_VEL) * fraction;
 
-    window.addEventListener('pointerup', function(e) {
-        if (isJumpPointerEvent(e)) releaseJump();
-    }, true);
+            if (isFinite(vel)) {
+                Matter.Body.setVelocity(app.player.body, {
+                    x: app.player.body.velocity.x,
+                    y: vel
+                });
+                app.player.jumpReady = false;
+                usedJumpSinceGrounded = true;
+                wasGrounded = false;
+                try { app.assets.audio.play("pop1"); } catch (_) {}
+            }
+        };
 
-    window.addEventListener('keydown', function(e) {
-        if (e.code === 'Space' || e.code === 'ArrowUp') {
-            e.preventDefault();
-        }
-    }, true);
+        api.patch(app.player, 'jump', (next) => {
+            if (app.player.mode === 'grapple') return next();
+            if (isCharging) return;
+            if (!app.player.jumpReady || usedJumpSinceGrounded) return;
 
-    addModToList("Jump Charging");
-})();
+            isCharging = true;
+            chargeStartTime = performance.now();
+            try { app.assets.audio.play("wood"); } catch (_) {}
+
+            if (app.play) { updateBarFill(0); showUI(); }
+
+            forceReleaseTimeout = setTimeout(() => {
+                forceReleaseTimeout = null;
+                releaseJump();
+            }, MAX_CHARGE_MS);
+        });
+
+        const isJumpKey = (e) => ['Space', 'ArrowUp', 'KeyW'].indexOf(e.code) !== -1;
+
+        api.onEvent('keyup', (e) => { if (isJumpKey(e)) releaseJump(); }, true);
+        api.onEvent('pointerup', (e) => {
+            if (e.pointerType === 'mouse' && e.target && e.target.tagName === 'CANVAS') releaseJump();
+        }, true);
+
+        api.onEvent('keydown', (e) => {
+            if (e.code === 'Space' || e.code === 'ArrowUp') e.preventDefault();
+        }, true);
+
+        api.onUpdate(() => {
+            if (app.player.mode === 'grapple') {
+                if (isCharging) {
+                    isCharging = false;
+                    if (forceReleaseTimeout) {
+                        clearTimeout(forceReleaseTimeout);
+                        forceReleaseTimeout = null;
+                    }
+                    hideUI();
+                }
+                return;
+            }
+
+            const grounded = app.player.jumpReady;
+            if (grounded && !wasGrounded) usedJumpSinceGrounded = false;
+            wasGrounded = grounded;
+
+            if (!app.play) {
+                if (isCharging) releaseJump();
+                hideUI();
+                return;
+            }
+
+            if (isCharging) {
+                const heldMs = performance.now() - chargeStartTime;
+                const fraction = Math.min(heldMs, MAX_CHARGE_MS) / MAX_CHARGE_MS;
+                updateBarFill(fraction);
+            }
+        });
+
+        api.addCleanup(() => {
+            if (forceReleaseTimeout) clearTimeout(forceReleaseTimeout);
+        });
+    }
+});
