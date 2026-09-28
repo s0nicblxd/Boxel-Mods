@@ -6,7 +6,7 @@ window.BOXEL_MOD_MANIFEST = {
             name: 'Portal Mod',
             version: '1.0',
             description: 'Place blue & orange portals anywhere.',
-            url: 'https://cdn.jsdelivr.net/gh/s0nicblxd/Boxel-Mods@main/PortalMod.js'
+            url: 'https://cdn.statically.io/gh/s0nicblxd/Boxel-Mods/main/PortalMod.js'
         }
     ]
 };
