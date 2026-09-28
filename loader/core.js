@@ -173,7 +173,11 @@
             z-index: 9998;
         }
         .modapi-btn:hover { transform: translateY(-2px); }
-        .modapi-btn .msym { font-family: 'Material Symbols Rounded'; font-size: 28px; line-height: 1; }
+        .modapi-btn .msym {
+            font-family: 'Material Symbols Rounded';
+            font-size: 32px; line-height: 1;
+            display: flex; align-items: center; justify-content: center;
+        }
         .modapi-drawer {
             position: fixed; top: 0; right: 0; bottom: 0;
             width: 380px; max-width: 90vw;
@@ -197,7 +201,11 @@
             background: #eb2b6d; color: #fff;
             display: flex; align-items: center; justify-content: center;
         }
-        .modapi-title .icon .msym { font-family: 'Material Symbols Rounded'; font-size: 22px; }
+        .modapi-title .icon .msym {
+            font-family: 'Material Symbols Rounded';
+            font-size: 26px; line-height: 1;
+            display: flex; align-items: center; justify-content: center;
+        }
         .modapi-title .name { font-size: 20px; }
         .modapi-title .ver  { font-size: 11px; opacity: 0.55; }
         .modapi-close {
@@ -207,12 +215,20 @@
             cursor: pointer; transition: background 0.15s;
         }
         .modapi-close:hover { background: #eb2b6d; }
-        .modapi-close .msym { font-family: 'Material Symbols Rounded'; font-size: 20px; }
+        .modapi-close .msym {
+            font-family: 'Material Symbols Rounded';
+            font-size: 22px; line-height: 1;
+            display: flex; align-items: center; justify-content: center;
+        }
         .modapi-search {
             padding: 12px 16px; display: flex; align-items: center; gap: 10px;
             background: #1a2138; margin: 14px 22px 0; border-radius: 10px;
         }
-        .modapi-search .msym { font-family: 'Material Symbols Rounded'; color: #7e8aa5; font-size: 20px; }
+        .modapi-search .msym {
+            font-family: 'Material Symbols Rounded';
+            color: #7e8aa5; font-size: 22px; line-height: 1;
+            display: flex; align-items: center; justify-content: center;
+        }
         .modapi-search input {
             flex: 1; background: transparent; color: #fff;
             border: none; outline: none;
