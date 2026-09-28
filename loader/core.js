@@ -3,7 +3,7 @@
 
     if (window.ModAPI && window.ModAPI._booted) return;
 
-    const CORE_VERSION = '1.0.1';
+    const CORE_VERSION = '1.0.2';
 
     const registry = new Map();
     const patchStacks = new Map();
