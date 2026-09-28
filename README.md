@@ -41,4 +41,18 @@ Adds a fully working portal gun to the game:
 - Walk into either portal and you'll pop out the other one with your momentum fully preserved!
 - Both portals scale in smoothly when placed, and there's no cooldown, so you can bounce between them as fast as you can move!!!
 
+### [Freecam!](FreecamMod.js)
+Detaches the camera from the player so you can freely explore, rotate, and screenshot any level from any angle. Background and boundaries stay fixed so you never see the void.
+
+- **V:** toggle freecam on / off
+- **WASD:** pan the camera
+- **Q / E:** zoom out / in
+- **1 / 2:** orbit around the player (yaw)
+- **R / F:** tilt the camera up / down (pitch)
+- **3:** reset camera to the player's default position
+- **P:** take a screenshot (saves as `boxel-3d-<timestamp>.png`)
+- **U:** hide / show all UI (including this mod's panel)
+
+The mod's info panel shows the camera's current X / Y / Z position, yaw angle, and pitch angle :D
+
 # Enjoy your time with these mods!!!
