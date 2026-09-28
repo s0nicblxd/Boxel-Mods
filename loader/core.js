@@ -162,6 +162,9 @@
         };
     };
 
+    const MSYM_FONT = "'Material Symbols Rounded'";
+    const MSYM_SETTINGS = "'FILL' 1, 'wght' 700, 'GRAD' 0, 'opsz' 24";
+
     const MENU_CSS = `
         .modapi-btn {
             position: fixed; top: 20px; right: 88px;
@@ -174,9 +177,10 @@
         }
         .modapi-btn:hover { transform: translateY(-2px); }
         .modapi-btn .msym {
-            font-family: 'Material Symbols Rounded';
-            font-size: 32px; line-height: 1;
-            display: flex; align-items: center; justify-content: center;
+            font-family: ${MSYM_FONT};
+            font-size: 32px;
+            line-height: 0;
+            font-variation-settings: ${MSYM_SETTINGS};
         }
         .modapi-drawer {
             position: fixed; top: 0; right: 0; bottom: 0;
@@ -202,9 +206,10 @@
             display: flex; align-items: center; justify-content: center;
         }
         .modapi-title .icon .msym {
-            font-family: 'Material Symbols Rounded';
-            font-size: 26px; line-height: 1;
-            display: flex; align-items: center; justify-content: center;
+            font-family: ${MSYM_FONT};
+            font-size: 26px;
+            line-height: 0;
+            font-variation-settings: ${MSYM_SETTINGS};
         }
         .modapi-title .name { font-size: 20px; }
         .modapi-title .ver  { font-size: 11px; opacity: 0.55; }
@@ -216,18 +221,20 @@
         }
         .modapi-close:hover { background: #eb2b6d; }
         .modapi-close .msym {
-            font-family: 'Material Symbols Rounded';
-            font-size: 22px; line-height: 1;
-            display: flex; align-items: center; justify-content: center;
+            font-family: ${MSYM_FONT};
+            font-size: 22px;
+            line-height: 0;
+            font-variation-settings: ${MSYM_SETTINGS};
         }
         .modapi-search {
             padding: 12px 16px; display: flex; align-items: center; gap: 10px;
             background: #1a2138; margin: 14px 22px 0; border-radius: 10px;
         }
         .modapi-search .msym {
-            font-family: 'Material Symbols Rounded';
-            color: #7e8aa5; font-size: 22px; line-height: 1;
-            display: flex; align-items: center; justify-content: center;
+            font-family: ${MSYM_FONT};
+            color: #7e8aa5; font-size: 22px;
+            line-height: 0;
+            font-variation-settings: ${MSYM_SETTINGS};
         }
         .modapi-search input {
             flex: 1; background: transparent; color: #fff;
