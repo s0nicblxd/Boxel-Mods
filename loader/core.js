@@ -3,7 +3,7 @@
 
     if (window.ModAPI && window.ModAPI._booted) return;
 
-    const CORE_VERSION = '1.0.2';
+    const CORE_VERSION = '1.0.3';
 
     const registry = new Map();
     const patchStacks = new Map();
@@ -168,22 +168,6 @@
     const MSYM_SETTINGS = "'FILL' 1, 'wght' 700, 'GRAD' 0, 'opsz' 24";
 
     const MENU_CSS = `
-        .modapi-btn {
-            position: fixed; top: 150px; right: 20px;
-            width: 56px; height: 56px; border-radius: 14px;
-            background: #eb2b6d; color: #fff;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 0 #00000040;
-            cursor: pointer; transition: transform 0.15s;
-            z-index: 9998;
-        }
-        .modapi-btn:hover { transform: translateY(-2px); }
-        .modapi-btn .msym {
-            font-family: ${MSYM_FONT};
-            font-size: 32px;
-            line-height: 0;
-            font-variation-settings: ${MSYM_SETTINGS};
-        }
         .modapi-drawer {
             position: fixed; top: 0; right: 0; bottom: 0;
             width: 380px; max-width: 90vw;
@@ -289,8 +273,33 @@
         const btn = document.createElement('div');
         btn.className = 'modapi-btn';
         btn.innerHTML = '<span class="msym">extension</span>';
-        btn.style.display = 'none';
+        btn.style.cssText = `
+            position: fixed;
+            top: 84px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            background: #eb2b6d;
+            color: #fff;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 0 #00000040;
+            cursor: pointer;
+            z-index: 9998;
+            font-family: ${MSYM_FONT};
+            font-variation-settings: ${MSYM_SETTINGS};
+        `;
         document.body.appendChild(btn);
+
+        const btnIcon = btn.querySelector('.msym');
+        btnIcon.style.cssText = `
+            font-family: ${MSYM_FONT};
+            font-size: 32px;
+            line-height: 0;
+            font-variation-settings: ${MSYM_SETTINGS};
+        `;
 
         const drawer = document.createElement('div');
         drawer.className = 'modapi-drawer';
