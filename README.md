@@ -1,6 +1,6 @@
 # Boxel Mods!
 
-A small collection of mods for [Boxel 3D](https://www.dopplercreative.com/games/boxel-3d/play/). Now with a full mod menu!
+A small collection of mods for [Boxel 3D](https://www.dopplercreative.com/games/boxel-3d/play/). Now with a full mod menu (V1.0.0)!
 
 ## Requirements
 
