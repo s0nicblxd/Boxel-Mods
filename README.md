@@ -1,20 +1,57 @@
 # Boxel Mods!
 
-A small collection of mods for [Boxel 3D](https://www.dopplercreative.com/games/boxel-3d/play/), built on top of [Charlieee1's Boxel 3D Modding API](https://github.com/Charlieee1/Boxel-3d-Mods/blob/main/Boxel%203d%20Modding%20API.user.js). More mods coming soon!
+A small collection of mods for [Boxel 3D](https://www.dopplercreative.com/games/boxel-3d/play/). Now with a full mod menu!
 
 ## Requirements
 
 1. Open Boxel 3D and press **F12** (or CTRL + Shift + J) to open your browser's DevTools.
 2. Go to the **Console** tab.
-3. Paste in the [Boxel 3D Modding API](https://github.com/Charlieee1/Boxel-3d-Mods/blob/main/Boxel%203d%20Modding%20API.user.js) code **FIRST** and press Enter. This only needs to be done once per page load, and must be done **BEFORE** any mod below.
-4. Paste in the code for whichever mod(s) you want to use and press Enter!
+3. Paste the loader below and press Enter. That's it! The mod menu loads itself.
+4. Enter a level and click the puzzle-piece button (below the settings btn) to open the menu.
 
-*NOTE: Since this all runs in the console, you'll need to redo steps 3 to 4 every time you reload the page.*
+*NOTE: Since this all runs in the console, you'll need to redo step 3 every time you reload the page.*
+
+## Loader
+
+```js
+(function () {
+    const BASE = 'https://raw.githubusercontent.com/s0nicblxd/Boxel-Mods/main/loader';
+
+    window.ModAPI_loadScript = function (url) {
+        const busted = url + (url.indexOf('?') === -1 ? '?t=' : '&t=') + Date.now();
+        return fetch(busted)
+            .then(r => r.ok ? r.text() : Promise.reject(new Error('HTTP ' + r.status + ' for ' + url)))
+            .then(text => {
+                const blob = new Blob([text], { type: 'text/javascript' });
+                const blobUrl = URL.createObjectURL(blob);
+                return new Promise((resolve, reject) => {
+                    const s = document.createElement('script');
+                    s.src = blobUrl;
+                    s.onload = () => { URL.revokeObjectURL(blobUrl); resolve(); };
+                    s.onerror = () => { URL.revokeObjectURL(blobUrl); reject(new Error('Load failed: ' + url)); };
+                    document.head.appendChild(s);
+                });
+            });
+    };
+
+    window.ModAPI_loadScript(BASE + '/core.js')
+        .then(() => window.ModAPI.boot(BASE + '/manifest.js'))
+        .catch(e => console.error('[BoxelMods]', e.message));
+})();
+```
+
+## Using the menu
+
+Once you're in a level, a new button appears right below the settings gear IN-GAME (for now). Click it to open the mod menu.
+
+- **Click any mod** to turn it on or off instantly. No reload needed.
+- **Simple Search bar** at the top to filter by name.
+- Mods you had enabled stay enabled next time you paste the loader, yay :D.
 
 ## Mods
 
 ### [30 Second Timer!](30SecMod.js)
-Adds a 30-second countdown timer to the screen! If you haven't finished the level by the time it hits zero, you're killed and sent back to the begening of the level...
+Adds a 30-second countdown timer to the screen! If you haven't finished the level by the time it hits zero, you're killed and sent back to the beginning of the level...
 
 ### [Checkpoints!](CheckpointMod.js)
 Adds a manual checkpoint system on top of the game's built-in one:
