@@ -392,8 +392,10 @@
         }
 
         onUpdate(() => {
-            btn.style.display = app.play ? 'flex' : 'none';
-            if (!app.play && drawer.classList.contains('open')) {
+            const inGame = app.play === true && app.player && app.player.parent;
+            const suppressed = !!window._ModAPI_suppressBtn;
+            btn.style.display = (inGame && !suppressed) ? 'flex' : 'none';
+            if (!inGame && drawer.classList.contains('open')) {
                 drawer.classList.remove('open');
             }
         });
