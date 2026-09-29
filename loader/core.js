@@ -3,7 +3,7 @@
 
     if (window.ModAPI && window.ModAPI._booted) return;
 
-    const CORE_VERSION = '1.0.4';
+    const CORE_VERSION = '1.0.0';
 
     const registry = new Map();
     const patchStacks = new Map();
@@ -25,22 +25,29 @@
         if (!def || !def.id) { log('register() needs an id'); return; }
 
         const existing = registry.get(def.id);
-        if (existing && existing.def && existing.loaded) {
+        if (existing && existing.def && existing.loaded && !existing.dev) {
             log('Mod', def.id, 'already loaded, ignoring re-register');
             return;
         }
 
-        const entry = existing || { def: null, handles: [], loaded: false };
-        entry.def = def;
-        entry.handles = [];
-        entry.loaded = false;
-        registry.set(def.id, entry);
-
         const resolver = pendingRegistrations.get(def.id);
         if (resolver) {
             pendingRegistrations.delete(def.id);
+            const entry = existing || { def: null, handles: [], loaded: false };
+            entry.def = def;
+            entry.handles = [];
+            entry.loaded = false;
+            registry.set(def.id, entry);
             resolver(entry);
+            return;
         }
+
+        if (existing) callUnload(existing);
+        const entry = { def, handles: [], loaded: false, dev: true };
+        registry.set(def.id, entry);
+        callLoad(entry);
+        if (menu) menu.render();
+        log('Dev-loaded:', def.id, '(in-memory only, cleared on reload)');
     }
 
     function callLoad(entry) {
@@ -331,9 +338,28 @@
 
         function render() {
             listEl.innerHTML = '';
-            if (!manifest) return;
+            if (!manifest && registry.size === 0) return;
 
-            for (const m of manifest.mods) {
+            const allMods = [];
+            if (manifest) {
+                for (const m of manifest.mods) allMods.push(m);
+            }
+            registry.forEach((entry, id) => {
+                if (entry.dev) {
+                    allMods.push({
+                        id: entry.def.id,
+                        name: entry.def.name,
+                        version: entry.def.version,
+                        description: entry.def.description
+                    });
+                }
+            });
+
+            const seen = new Set();
+            for (const m of allMods) {
+                if (seen.has(m.id)) continue;
+                seen.add(m.id);
+
                 if (filter && !(m.name.toLowerCase().includes(filter) ||
                                 (m.description || '').toLowerCase().includes(filter))) continue;
 
@@ -401,10 +427,20 @@
     }
 
     async function enableMod(id) {
-        const modDef = manifest.mods.find(m => m.id === id);
+        let entry = registry.get(id);
+
+        if (entry && entry.dev) {
+            if (!entry.loaded) {
+                entry.loaded = false;
+                callLoad(entry);
+                if (menu) menu.render();
+            }
+            return;
+        }
+
+        const modDef = manifest && manifest.mods.find(m => m.id === id);
         if (!modDef) return;
 
-        let entry = registry.get(id);
         if (!entry || !entry.def) {
             entry = await registerMod(modDef);
         }
@@ -426,7 +462,9 @@
 
     function saveEnabled() {
         const ids = [];
-        registry.forEach((entry, id) => { if (entry.loaded) ids.push(id); });
+        registry.forEach((entry, id) => {
+            if (entry.loaded && !entry.dev) ids.push(id);
+        });
         try { localStorage.setItem(ENABLED_KEY, JSON.stringify(ids)); } catch (_) {}
     }
 
