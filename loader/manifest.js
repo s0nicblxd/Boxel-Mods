@@ -25,9 +25,16 @@ window.BOXEL_MOD_MANIFEST = {
         {
             id: 'ground-pound',
             name: 'Ground Pound',
-            version: '1.0',
+            version: '1.01',
             description: 'Slam down midair for a bounce and afterimages.',
             url: 'https://raw.githubusercontent.com/s0nicblxd/Boxel-Mods/main/GroundPound.js'
+        },
+        {
+            id: 'charlie-dash',
+            name: "Charlieee1's Dash Mod",
+            version: '1.0',
+            description: 'Air dash in your facing direction. Original by Charlieee1.',
+            url: 'https://raw.githubusercontent.com/s0nicblxd/Boxel-Mods/main/CharlieDashMod.js'
         },
         {
             id: 'jump-charge',
