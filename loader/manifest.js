@@ -34,7 +34,7 @@ window.BOXEL_MOD_MANIFEST = {
             name: "Charlieee1's Dash Mod",
             version: '1.0',
             description: 'Air dash in your facing direction. Original by Charlieee1.',
-            url: 'https://raw.githubusercontent.com/s0nicblxd/Boxel-Mods/main/CharlieDashMod.js'
+            url: 'https://raw.githubusercontent.com/s0nicblxd/Boxel-Mods/main/Charlieee1Dash.js'
         },
         {
             id: 'jump-charge',
