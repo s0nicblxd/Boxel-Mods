@@ -277,7 +277,7 @@
         btn.style.cssText = `
             position: fixed;
             top: 150px;
-            right: 60px;
+            left: 0;
             width: 56px;
             height: 56px;
             border-radius: 14px;
@@ -301,6 +301,33 @@
             line-height: 0;
             font-variation-settings: ${MSYM_SETTINGS};
         `;
+
+        const findGear = () => {
+            let found = null;
+            document.querySelectorAll('.material-symbols-rounded').forEach(span => {
+                if (found) return;
+                if (span.textContent.trim() === 'settings') {
+                    found = span.closest('a, button, [role="button"]') || span.parentElement;
+                }
+            });
+            return found;
+        };
+
+        const anchorToGear = () => {
+            const gear = findGear();
+            if (!gear) return;
+
+            const gr = gear.getBoundingClientRect();
+            const gapPx = 8;
+            const btnW = btn.offsetWidth || 56;
+
+            const gearCenterX = gr.left + gr.width / 2;
+            const top = Math.round(gr.bottom + gapPx);
+            const left = Math.round(gearCenterX - btnW / 2);
+
+            btn.style.top = top + 'px';
+            btn.style.left = left + 'px';
+        };
 
         const drawer = document.createElement('div');
         drawer.className = 'modapi-drawer';
@@ -395,6 +422,7 @@
             const inGame = app.play === true && app.player && app.player.parent;
             const suppressed = !!window._ModAPI_suppressBtn;
             btn.style.display = (inGame && !suppressed) ? 'flex' : 'none';
+            if (inGame && !suppressed) anchorToGear();
             if (!inGame && drawer.classList.contains('open')) {
                 drawer.classList.remove('open');
             }
