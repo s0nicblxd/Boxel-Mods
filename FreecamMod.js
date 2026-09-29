@@ -1,7 +1,7 @@
 ModAPI.register({
     id: 'freecam',
     name: 'Freecam Mod',
-    version: '1.0',
+    version: '1.01',
     description: 'Detached camera for filming & screenshots.',
 
     load() {
@@ -20,9 +20,6 @@ ModAPI.register({
         const TOP_LEFT_UI_W = 330;
         const TOP_RIGHT_UI_W = 80;
         const TOP_GAP = 20;
-
-        const MSYM_FONT = "'Material Symbols Rounded'";
-        const MSYM_SETTINGS = "'FILL' 1, 'wght' 700, 'GRAD' 0, 'opsz' 24";
 
         const CAM_KEYS = new Set([
             'KeyW', 'KeyA', 'KeyS', 'KeyD', 'KeyQ', 'KeyE', 'KeyP',
@@ -109,6 +106,7 @@ ModAPI.register({
                     try { delete el._freecamPrevDisplay; } catch (_) {}
                 });
                 uiHiddenElements.clear();
+                window._ModAPI_suppressBtn = false;
                 return;
             }
 
@@ -130,6 +128,8 @@ ModAPI.register({
             };
 
             for (const c of root.children) walk(c);
+
+            window._ModAPI_suppressBtn = true;
         };
 
         const panel = document.createElement('div');
@@ -256,7 +256,7 @@ ModAPI.register({
                 if (e.type === 'keydown') toggle();
                 return;
             }
-            if (e.code === 'KeyU' && !e.ctrlKey && !e.shiftKey && !e.altKey && !e.metaKey) {
+            if (e.code === 'KeyH' && !e.ctrlKey && !e.shiftKey && !e.altKey && !e.metaKey) {
                 e.stopImmediatePropagation();
                 e.preventDefault();
                 if (e.type === 'keydown') toggleUI();
@@ -365,6 +365,7 @@ ModAPI.register({
             restoreCam();
             resetCamToGame();
             if (uiHidden) setGameUIHidden(false);
+            window._ModAPI_suppressBtn = false;
         });
     }
 });
