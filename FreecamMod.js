@@ -1,7 +1,7 @@
 ModAPI.register({
     id: 'freecam',
     name: 'Freecam Mod',
-    version: '1.0',
+    version: '1.01',
     description: 'Detached camera for filming & screenshots.',
 
     load() {
