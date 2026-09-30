@@ -88,8 +88,15 @@ Detaches the camera from the player so you can freely explore, rotate, and scree
 - **R / F:** tilt the camera up / down (pitch)
 - **3:** reset camera to the player's default position
 - **P:** take a screenshot (saves as `boxel-3d-<timestamp>.png`)
-- **U:** hide / show all UI (including this mod's panel)
+- **H:** hide / show all UI (including this mod's panel)
 
 The mod's info panel shows the camera's current X / Y / Z position, yaw angle, and pitch angle :D
+
+### [Size Shifter!](SizeShifter.js)
+Grow and shrink on the fly with a smooth tween:
+- **= :** grow by 0.25×
+- **- :** shrink by 0.25×
+- **0 :** snap back to normal size.
+- If you have a checkpoint saved, dying keeps your current size instead of resetting!
 
 # Enjoy your time with these mods!!!
