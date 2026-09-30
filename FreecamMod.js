@@ -1,7 +1,7 @@
 ModAPI.register({
     id: 'freecam',
     name: 'Freecam Mod',
-    version: '1.01',
+    version: '1.0',
     description: 'Detached camera for filming & screenshots.',
 
     load() {
@@ -340,12 +340,13 @@ ModAPI.register({
                 const len = Math.hypot(dx, dy, dz) || 1;
                 dx /= len; dy /= len; dz /= len;
 
-                const s = BG_CAMERA_DISTANCE * (1280 / 180);
+                const bgDist = len + BG_CAMERA_DISTANCE;
+                const s = bgDist * (1280 / 180);
                 bg.scale.set(s, s, s);
                 bg.position.set(
-                    cam.position.x + dx * BG_CAMERA_DISTANCE,
-                    cam.position.y + dy * BG_CAMERA_DISTANCE,
-                    cam.position.z + dz * BG_CAMERA_DISTANCE
+                    cam.position.x + dx * bgDist,
+                    cam.position.y + dy * bgDist,
+                    cam.position.z + dz * bgDist
                 );
                 bg.quaternion.copy(cam.quaternion);
                 bg.updateMatrixWorld(true);
